@@ -1,6 +1,36 @@
 function [jaccard_index_in_out_list_bilateral,jaccard_index_in_out_list_all,jaccard_index_in_list_bilateral,jaccard_index_in_list_all] = asymtool_jaccard_2step(A,LRUL,is_bilateral,is_all,is_in,is_in_out)
-% Calculate 2-step jaccard index
-%   A: (N by N) adjacency matrix (either directed or undirected)
+
+%   2-step Jaccard Index
+%
+%   asymtool_jaccard_2step calculates the Jaccard similarity coefficient of
+%   2step neighborhood. since the network is directed network, neighborhood
+%   can be defined considering inward and outward directions. Here, we only
+%   consider in neighborhood and in&out neighborhood.
+%    
+%   Inputs:     A,      nxn Adjacent matrix where n is the number of nodes.
+%                       adjacency matrix for a graph where nodes are
+%                       organized in a bilateral symmetric manner, with
+%                       each left nodes in the front or right nodes.
+%               LRU,    nx3 matrix indicating states of (L) left and (R) 
+%                       right for bilaterally symmetric neurons and (U)
+%                       unilateral.
+%               is_bilateral,    false / true (default)
+%               is_all,          false / true (default)
+%               is_in,           false / true (default)
+%               is_in_out,       false / true (default)
+%
+%   Outputs:    MFdiff_struc_list_bilateral, 
+%               MFdiff_struc_list_all,
+%               MFdiff_func_list_bilateral,
+%               MFdiff_func_list_all,
+%
+%   Other m-files required: none                           
+%   Subfunctions: none
+%   MAT-files required: none
+%
+%   ____________________________________________________________________
+%
+
 
 if nargin < 2
     error('Not enough input arguments!!');

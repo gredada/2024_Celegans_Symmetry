@@ -1,6 +1,38 @@
-function [MFdiff_struc_list_bilateral,MFdiff_struc_list_all,MFdiff_func_list_bilateral,MFdiff_func_list_all] = asymtool_motif_fingerprint_difference(A,LRUL,motif_node,is_bilateral,is_all,is_struc,is_func)
-% Calculate 2-step jaccard index
-%   A: (N by N) adjacency matrix (either directed or undirected)
+function [MFdiff_struc_list_bilateral,MFdiff_struc_list_all,MFdiff_func_list_bilateral,MFdiff_func_list_all] = asymtool_motif_fingerprint_difference(A,LRU,motif_node,is_bilateral,is_all,is_struc,is_func)
+
+%   Motif-fingerprint Difference Index
+%
+%   asymtool_motif_fingerprint_difference calculates the structural and 
+%   functional motif-fingerprint difference between two nodes (bilateral
+%   pair or all pair). The motif fingerprints are conceptualized as
+%   probabilities and difference were measured by Jenson-Shannon divergence
+%    
+%   Inputs:     A,      nxn Adjacent matrix where n is the number of nodes.
+%                       adjacency matrix for a graph where nodes are
+%                       organized in a bilateral symmetric manner, with
+%                       each left nodes in the front or right nodes.
+%               LRU,    nx3 matrix indicating states of (L) left and (R) 
+%                       right for bilaterally symmetric neurons and (U)
+%                       unilateral.
+%               motif_node,      3 / 4 
+%               is_bilateral,    false / true (default)
+%               is_all,          false / true (default)
+%               is_struc,        false / true (default)
+%               is_func,         false / true (default)
+%
+%   Outputs:    MFdiff_struc_list_bilateral, 
+%               MFdiff_struc_list_all,
+%               MFdiff_func_list_bilateral,
+%               MFdiff_func_list_all,
+%
+%   Other m-files required: motif3struct_bin, motif3funct_bin,
+%                           motif4struct_bin, motif4funct_bin from BCT
+%                           JSDiv
+%   Subfunctions: none
+%   MAT-files required: none
+%
+%   ____________________________________________________________________
+%
 
 if nargin < 3
     error('Not enough input arguments!!');
@@ -32,8 +64,8 @@ MFdiff_func_list_all = [];
 
 N = size(A,1);
     
-left_idx_list = find(LRUL(:,1));
-right_idx_list = find(LRUL(:,2));
+left_idx_list = find(LRU(:,1));
+right_idx_list = find(LRU(:,2));
 
 if is_struc
     [~,F]=motif_struc_cal_fun(A);

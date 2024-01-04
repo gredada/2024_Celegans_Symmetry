@@ -1,4 +1,5 @@
 function [redundancy_index_list_bilateral,redundancy_index_list_all] = asymtool_pair_redundancy_index(A,LRU,is_bilateral,is_all)
+
 %   Pair-Redundancy Index
 %
 %   [redundancy_index_list_bilateral,redundancy_index_list_all] = 
@@ -15,8 +16,8 @@ function [redundancy_index_list_bilateral,redundancy_index_list_all] = asymtool_
 %               LRU,    nx3 matrix indicating states of (L) left and (R) 
 %                       right for bilaterally symmetric neurons and (U)
 %                       unilateral.
-%               is_bilateral,    false : no / true : yes (default)
-%               is_all,          false : no / true : yes (default)
+%               is_bilateral,    false / true (default)
+%               is_all,          false / true (default)
 %
 %   Outputs:    redundancy_index_list_bilateral, 
 %               redundancy_index_list_all,

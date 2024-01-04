@@ -60,7 +60,8 @@ cd(cwd);
 % p_value
 p_value_herm=custom_shuffle_test(Herm_Pair_Redundancy_all,Herm_Pair_Redundancy_bilateral,100000,1);
 p_value_male=custom_shuffle_test(Male_Pair_Redundancy_all,Male_Pair_Redundancy_bilateral,100000,1);
-
+disp(p_value_herm)
+disp(p_value_male)
 %% null model for pair-robustness
 clear;clc;
 cwd = pwd;
@@ -120,6 +121,8 @@ cd(cwd);
 % p_value
 p_value_herm=custom_shuffle_test(Herm_Jaccard_Index_1step_in_out_all,Herm_Jaccard_Index_1step_in_out_bilateral,100000,1);
 p_value_male=custom_shuffle_test(Male_Jaccard_Index_2step_in_out_all,Male_Jaccard_Index_2step_in_out_bilateral,100000,1);
+disp(p_value_herm)
+disp(p_value_male)
 %% display for connectivity similarity
 
 % figure; plotSpread({Herm_Jaccard_Index_1step_in_out_bilateral,Herm_Jaccard_Index_1step_in_out_all},'showMM',5,'distributionColor','k')
@@ -139,15 +142,15 @@ null_n=1000;
 Herm_pair_n = sum(Herm_LRU(:,1));
 Male_pair_n = sum(Male_LRU(:,1));
 
-Herm_Jaccard_Index_1step_in_out_bilateral_null = zeros(Herm_pair_n,null_n);
-Herm_Jaccard_Index_1step_in_bilateral_null = zeros(Herm_pair_n,null_n);
-Male_Jaccard_Index_1step_in_out_bilateral_null = zeros(Male_pair_n,null_n);
-Male_Jaccard_Index_1step_in_bilateral_null = zeros(Male_pair_n,null_n);
+Herm_Jaccard_Index_1step_in_out_bilateral_null  = zeros(Herm_pair_n,null_n);
+Herm_Jaccard_Index_1step_in_bilateral_null      = zeros(Herm_pair_n,null_n);
+Male_Jaccard_Index_1step_in_out_bilateral_null  = zeros(Male_pair_n,null_n);
+Male_Jaccard_Index_1step_in_bilateral_null      = zeros(Male_pair_n,null_n);
 
-Herm_Jaccard_Index_2step_in_out_bilateral_null = zeros(Herm_pair_n,null_n);
-Herm_Jaccard_Index_2step_in_bilateral_null = zeros(Herm_pair_n,null_n);
-Male_Jaccard_Index_2step_in_out_bilateral_null = zeros(Male_pair_n,null_n);
-Male_Jaccard_Index_2step_in_bilateral_null = zeros(Male_pair_n,null_n);
+Herm_Jaccard_Index_2step_in_out_bilateral_null  = zeros(Herm_pair_n,null_n);
+Herm_Jaccard_Index_2step_in_bilateral_null      = zeros(Herm_pair_n,null_n);
+Male_Jaccard_Index_2step_in_out_bilateral_null  = zeros(Male_pair_n,null_n);
+Male_Jaccard_Index_2step_in_bilateral_null      = zeros(Male_pair_n,null_n);
 
 for i=1:null_n
     disp(['generating random network ',num2str(i),])
@@ -181,8 +184,30 @@ cd(cwd);
 clear;clc;
 cwd = pwd;
 load('data/celegans_connectome.mat');
+
+null_n=1000;
+Herm_pair_n = sum(Herm_LRU(:,1));
+Male_pair_n = sum(Male_LRU(:,1));
+
+Herm_Jaccard_Index_1step_in_out_bilateral_asymlist  = zeros(Herm_pair_n,null_n);
+Herm_Jaccard_Index_1step_in_bilateral_asymlist      = zeros(Herm_pair_n,null_n);
+Male_Jaccard_Index_1step_in_out_bilateral_asymlist  = zeros(Male_pair_n,null_n);
+Male_Jaccard_Index_1step_in_bilateral_asymlist      = zeros(Male_pair_n,null_n);
+Herm_Jaccard_Index_2step_in_out_bilateral_asymlist  = zeros(Herm_pair_n,null_n);
+Herm_Jaccard_Index_2step_in_bilateral_asymlist      = zeros(Herm_pair_n,null_n);
+Male_Jaccard_Index_2step_in_out_bilateral_asymlist  = zeros(Male_pair_n,null_n);
+Male_Jaccard_Index_2step_in_bilateral_asymlist      = zeros(Male_pair_n,null_n);
+
+Herm_Jaccard_Index_1step_in_out_bilateral_symlist  = zeros(Herm_pair_n,null_n);
+Herm_Jaccard_Index_1step_in_bilateral_symlist      = zeros(Herm_pair_n,null_n);
+Male_Jaccard_Index_1step_in_out_bilateral_symlist  = zeros(Male_pair_n,null_n);
+Male_Jaccard_Index_1step_in_bilateral_symlist      = zeros(Male_pair_n,null_n);
+Herm_Jaccard_Index_2step_in_out_bilateral_symlist  = zeros(Herm_pair_n,null_n);
+Herm_Jaccard_Index_2step_in_bilateral_symlist      = zeros(Herm_pair_n,null_n);
+Male_Jaccard_Index_2step_in_out_bilateral_symlist  = zeros(Male_pair_n,null_n);
+Male_Jaccard_Index_2step_in_bilateral_symlist      = zeros(Male_pair_n,null_n);
+
 for p_asym=0:0.1:1
-    p_asym
     for i=1:1000
         temp_A=randmio_dir_ratio(Herm_Adj, Herm_cont_ind, p_asym, 0, 1000);
         temp_B=randmio_dir_ratio(Male_Adj, Male_cont_ind, p_asym, 0, 1000);
@@ -204,7 +229,6 @@ for p_asym=0:0.1:1
     end
 end
 for p_sym=0:0.1:1
-    p_sym
     for i=1:1000
         temp_A=randmio_dir_ratio(Herm_Adj, Herm_cont_ind, 0, p_sym, 1000);
         temp_B=randmio_dir_ratio(Male_Adj, Male_cont_ind, 0, p_sym, 1000);
@@ -225,6 +249,10 @@ for p_sym=0:0.1:1
             = asymtool_jaccard_2step(temp_B,Male_LRU);
     end
 end
+
+cd results
+save jaccard_index_break *Jaccard_Index*
+cd(cwd);
 
 %     data = jaccard_index_1step_in_Herm_sym_list';
 %     
@@ -261,7 +289,8 @@ cd(cwd);
 % p_value
 p_value_herm=custom_shuffle_test(Herm_MFdiff_3node_struc_all,Herm_MFdiff_3node_struc_bilateral,100000,0);
 p_value_male=custom_shuffle_test(Male_MFdiff_4node_func_all,Male_MFdiff_4node_func_bilateral,100000,0);
-
+disp(p_value_herm)
+disp(p_value_male)
 %% null model for motif fingerprint difference
 clear;clc;
 cwd = pwd;

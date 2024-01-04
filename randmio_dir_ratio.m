@@ -1,19 +1,20 @@
 function [A_shuffled, eff]=randmio_dir_ratio(A, cont_ind, p_asym, p_sym, ITER)
-%RANDMIO_DIR    Random graph with preserved in/out degree distribution
+
+%   randmio_dir_ratio    
 %
-%   R = randmio_dir(W, ITER);
-%   [R eff] = randmio_dir(W, ITER);
-%
-%   This function randomizes a directed network, while preserving the in-
+%   randmio_dir_ratio randomizes a directed network, while preserving the in-
 %   and out-degree distributions. In weighted networks, the function
 %   preserves the out-strength but not the in-strength distributions.
 %
-%   Input:      W,      directed (binary/weighted) connection matrix
-%               ITER,   rewiring parameter
-%                       (each edge is rewired approximately ITER times)
+%   Input:      A,          directed (binary/weighted) connection matrix
+%               cont_ind,   contralateral index
+%               p_asym,     ratio of asymmetric links to rewire
+%               p_sym,      ratio of symmetric links to rewire
+%               ITER,       rewiring parameter
+%                           (each edge is rewired approximately ITER times)
 %
-%   Output:     R,      randomized network
-%               eff,    number of actual rewirings carried out
+%   Output:     A_shuffled,      randomized network
+%               eff,             number of actual rewirings carried out
 %
 %   References: Maslov and Sneppen (2002) Science 296:910
 %
@@ -26,6 +27,10 @@ function [A_shuffled, eff]=randmio_dir_ratio(A, cont_ind, p_asym, p_sym, ITER)
 %   Jun 2007: Original (Mika Rubinov)
 %   Mar 2012: Limit number of rewiring attempts, count number of successful
 %             rewirings (Olaf Sporns)
+%   Dec 2023: rewiring partial matrix with symmetry and asymmetric ratio
+%
+%   ____________________________________________________________________
+%
 n=size(A,1);
 
 A_sym=A.*A(cont_ind,cont_ind);
