@@ -50,11 +50,11 @@ clear;clc;
 cwd = pwd;
 load('data/celegans_connectome.mat');
 
-[Herm_Pair_Redundancy_bilateral,Herm_Pair_Redundancy_all] = asymtool_pair_redundancy_index(Herm_Adj,Herm_LRU);
-[Male_Pair_Redundancy_bilateral,Male_Pair_Redundancy_all] = asymtool_pair_redundancy_index(Male_Adj,Male_LRU);
+[Herm_Pair_Redundancy_bilateral,Herm_Pair_Redundancy_all] = asymtool_pair_redundancy_index2(Herm_Adj,Herm_LRU);
+[Male_Pair_Redundancy_bilateral,Male_Pair_Redundancy_all] = asymtool_pair_redundancy_index2(Male_Adj,Male_LRU);
 
 cd results
-save pair_redundancy_index *Pair_Redundancy*
+save pair_redundancy_index2 *Pair_Redundancy*
 cd(cwd);
 
 % p_value
@@ -81,17 +81,17 @@ for i=1:null_n
     null_Male_Adj=randmio_dir(Male_Adj,1000);
     
     [Herm_Pair_Redundancy_bilateral_null(:,i),~] ...
-        = asymtool_pair_redundancy_index(null_Herm_Adj,Herm_LRU,true,false);
+        = asymtool_pair_redundancy_index2(null_Herm_Adj,Herm_LRU,true,false);
     [Male_Pair_Redundancy_bilateral_null(:,i),~] ...
-        = asymtool_pair_redundancy_index(null_Male_Adj,Male_LRU,true,false);
+        = asymtool_pair_redundancy_index2(null_Male_Adj,Male_LRU,true,false);
 end
 
 cd results
-save pair_redundancy_index_null *Pair_Redundancy*
+save pair_redundancy_index_null2 *Pair_Redundancy*
 cd(cwd);
 
 %% display for pair-robustness
-% figure; plotSpread({Herm_Pair_Redundancy_bilateral,Herm_Pair_Redundancy_all,Male_Pair_Redundancy_bilateral,Male_Pair_Redundancy_all},'showMM',5,'distributionColor','k')
+figure; plotSpread({Herm_Pair_Redundancy_bilateral,Herm_Pair_Redundancy_all,[],Male_Pair_Redundancy_bilateral,Male_Pair_Redundancy_all},'showMM',5,'distributionColor','k')
 
 %% connectivity similarity
 clear; clc;
@@ -386,7 +386,7 @@ close all
 % data
 load('data/celegans_connectome.mat');
 
-load('results/pair_redundancy_index.mat');
+load('results/pair_redundancy_index2.mat');
 load('results/jaccard_index.mat');
 load('results/motif_fingerprint_difference.mat');
 
@@ -403,7 +403,7 @@ herm_mf_data = [log(Herm_MFdiff_3node_struc_bilateral),log(Herm_MFdiff_3node_fun
 male_mf_data = [log(Male_MFdiff_3node_struc_bilateral),log(Male_MFdiff_3node_func_bilateral)...
     log(Male_MFdiff_4node_struc_bilateral),log(Male_MFdiff_4node_func_bilateral)];
 
-for i_redun=1:6
+for i_redun=1:2
     if i_redun == 1
         data = herm_pr_data;
     elseif i_redun ==2
@@ -441,13 +441,13 @@ end
 
 
 figure(1);
-subplot(6,1,i_redun)
+subplot(2,1,i_redun)
 x=[1,2,3];
-data=[mean(score(idx_sensory,1)),mean(score(idx_inter,1)),mean(score(idx_motor,1))];
+data=[mean(score(idx_sensory,1)),mean(score(idx_motor,1)),mean(score(idx_inter,1))];
 b=bar(x,data);
 b.FaceColor=[0.8,0.8,0.8];
 hold on
-err=[std(score(idx_sensory,1))/sqrt(length(idx_sensory)),std(score(idx_inter,1))/sqrt(length(idx_inter)),std(score(idx_motor,1))/sqrt(length(idx_motor))];
+err=[std(score(idx_sensory,1))/sqrt(length(idx_sensory)),std(score(idx_motor,1))/sqrt(length(idx_motor)),std(score(idx_inter,1))/sqrt(length(idx_inter))];
 errlow=data-err;
 errhigh=data+err;
 er = errorbar(x,data,-err,err);
@@ -456,6 +456,6 @@ er.LineStyle = 'none';
 ylim([min(errlow)-0.1,max(errhigh)+0.1])
 
 
-figure(2); subplot(3,2,i_redun);
- plotSpread(score(:,1),'categoryIdx',kmeans(score(:,1),3),'categoryColors',{'r','g','b'})
+figure(2); subplot(1,2,i_redun);
+ plotSpread(score(:,1),'categoryIdx',kmeans(score(:,1),3),'categoryColors',{'b','r','g'})
 end
