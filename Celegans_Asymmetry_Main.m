@@ -406,23 +406,33 @@ male_mf_data = [log(Male_MFdiff_3node_struc_bilateral),log(Male_MFdiff_3node_fun
 for i_redun=1:2
     if i_redun == 1
         data = herm_pr_data;
+        target_sex = 'herm';
     elseif i_redun ==2
-        data = male_pr_data;
+        data = male_pr_data;        
+        target_sex = 'male';
+
     elseif i_redun ==3
         data = herm_cs_data;        
+        target_sex = 'herm';
+
     elseif i_redun ==4
-        data = male_cs_data;
+        data = male_cs_data;        
+        target_sex = 'male';
+
     elseif i_redun ==5
         data = herm_mf_data;     
+        target_sex = 'herm';
+
     elseif i_redun ==6
         data = male_mf_data;      
+        target_sex = 'male';
+
     end
 X = normalize(data);
 
 % PCA
 [coeff, score, latent, tsquared, explained, mu] = pca(X);
 
-target_sex = 'herm';
 if strcmp(target_sex,'herm')
     idx_sensory = strcmp(Herm_celltype,'sensory neuron');
     idx_motor =  strcmp(Herm_celltype,'motorneuron');
@@ -458,4 +468,8 @@ ylim([min(errlow)-0.1,max(errhigh)+0.1])
 
 figure(2); subplot(1,2,i_redun);
  plotSpread(score(:,1),'categoryIdx',kmeans(score(:,1),3),'categoryColors',{'b','r','g'})
+ 
+ [~,~,temp]=anova1(score,idx_inter+2*idx_sensory+3*idx_motor)
+c=multcompare(temp)
+ 
 end
