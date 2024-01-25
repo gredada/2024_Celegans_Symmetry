@@ -40,4 +40,3 @@ end
 p_val=sum(temp)/n;
 
 end
-

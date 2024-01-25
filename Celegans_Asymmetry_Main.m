@@ -13,7 +13,6 @@ cd results
 save mirror_symmetry_index *Mirror*
 cd(cwd);
 
-
 %% Mirror Symmetry display
 iter_num=length(Herm_Mirror_Symmetry_null);
 data_plot = [Herm_Mirror_Symmetry,mean(Herm_Mirror_Symmetry_null);...
@@ -45,53 +44,6 @@ legend({'C. elegans data','Null model','error bar'},'Location','northeast');
 ylim([0,1])
 hold off
 
-%% pair-robustness
-clear;clc;
-cwd = pwd;
-load('data/celegans_connectome.mat');
-
-[Herm_Pair_Redundancy_bilateral,Herm_Pair_Redundancy_all] = asymtool_pair_redundancy_index2(Herm_Adj,Herm_LRU);
-[Male_Pair_Redundancy_bilateral,Male_Pair_Redundancy_all] = asymtool_pair_redundancy_index2(Male_Adj,Male_LRU);
-
-cd results
-save pair_redundancy_index2 *Pair_Redundancy*
-cd(cwd);
-
-% p_value
-p_value_herm=custom_shuffle_test(Herm_Pair_Redundancy_all,Herm_Pair_Redundancy_bilateral,100000,1);
-p_value_male=custom_shuffle_test(Male_Pair_Redundancy_all,Male_Pair_Redundancy_bilateral,100000,1);
-disp(p_value_herm)
-disp(p_value_male)
-%% null model for pair-robustness
-clear;clc;
-cwd = pwd;
-load('data/celegans_connectome.mat');
-
-null_n=1000;
-Herm_pair_n = sum(Herm_LRU(:,1));
-Male_pair_n = sum(Male_LRU(:,1));
-
-Herm_Pair_Redundancy_bilateral_null = zeros(Herm_pair_n,null_n);
-Male_Pair_Redundancy_bilateral_null = zeros(Male_pair_n,null_n);
-
-for i=1:null_n
-    disp(['generating random network ',num2str(i),])
-    
-    null_Herm_Adj=randmio_dir(Herm_Adj,1000);
-    null_Male_Adj=randmio_dir(Male_Adj,1000);
-    
-    [Herm_Pair_Redundancy_bilateral_null(:,i),~] ...
-        = asymtool_pair_redundancy_index2(null_Herm_Adj,Herm_LRU,true,false);
-    [Male_Pair_Redundancy_bilateral_null(:,i),~] ...
-        = asymtool_pair_redundancy_index2(null_Male_Adj,Male_LRU,true,false);
-end
-
-cd results
-save pair_redundancy_index_null2 *Pair_Redundancy*
-cd(cwd);
-
-%% display for pair-robustness
-figure; plotSpread({Herm_Pair_Redundancy_bilateral,Herm_Pair_Redundancy_all,[],Male_Pair_Redundancy_bilateral,Male_Pair_Redundancy_all},'showMM',5,'distributionColor','k')
 
 %% connectivity similarity
 clear; clc;
@@ -125,14 +77,14 @@ disp(p_value_herm)
 disp(p_value_male)
 %% display for connectivity similarity
 
-% figure; plotSpread({Herm_Jaccard_Index_1step_in_out_bilateral,Herm_Jaccard_Index_1step_in_out_all},'showMM',5,'distributionColor','k')
-% figure; plotSpread({Herm_Jaccard_Index_1step_in_bilateral,Herm_Jaccard_Index_1step_in_all},'showMM',5,'distributionColor','k')
-% figure; plotSpread({Male_Jaccard_Index_1step_in_out_bilateral,Male_Jaccard_Index_1step_in_out_all},'showMM',5,'distributionColor','k')
-% figure; plotSpread({Male_Jaccard_Index_1step_in_bilateral,Male_Jaccard_Index_1step_in_all},'showMM',5,'distributionColor','k')
-% figure; plotSpread({Herm_Jaccard_Index_2step_in_out_bilateral,Herm_Jaccard_Index_2step_in_out_all},'showMM',5,'distributionColor','k')
-% figure; plotSpread({Herm_Jaccard_Index_2step_in_bilateral,Herm_Jaccard_Index_2step_in_all},'showMM',5,'distributionColor','k')
-% figure; plotSpread({Male_Jaccard_Index_2step_in_out_bilateral,Male_Jaccard_Index_2step_in_out_all},'showMM',5,'distributionColor','k')
-% figure; plotSpread({Male_Jaccard_Index_2step_in_bilateral,Male_Jaccard_Index_2step_in_all},'showMM',5,'distributionColor','k')
+figure; plotSpread({Herm_Jaccard_Index_1step_in_out_bilateral,Herm_Jaccard_Index_1step_in_out_all},'showMM',5,'distributionColor','k')
+figure; plotSpread({Herm_Jaccard_Index_1step_in_bilateral,Herm_Jaccard_Index_1step_in_all},'showMM',5,'distributionColor','k')
+figure; plotSpread({Male_Jaccard_Index_1step_in_out_bilateral,Male_Jaccard_Index_1step_in_out_all},'showMM',5,'distributionColor','k')
+figure; plotSpread({Male_Jaccard_Index_1step_in_bilateral,Male_Jaccard_Index_1step_in_all},'showMM',5,'distributionColor','k')
+figure; plotSpread({Herm_Jaccard_Index_2step_in_out_bilateral,Herm_Jaccard_Index_2step_in_out_all},'showMM',5,'distributionColor','k')
+figure; plotSpread({Herm_Jaccard_Index_2step_in_bilateral,Herm_Jaccard_Index_2step_in_all},'showMM',5,'distributionColor','k')
+figure; plotSpread({Male_Jaccard_Index_2step_in_out_bilateral,Male_Jaccard_Index_2step_in_out_all},'showMM',5,'distributionColor','k')
+figure; plotSpread({Male_Jaccard_Index_2step_in_bilateral,Male_Jaccard_Index_2step_in_all},'showMM',5,'distributionColor','k')
 %% null model for connectivity similarity
 clear;clc;
 cwd = pwd;
@@ -179,7 +131,14 @@ cd results
 save jaccard_index_null *Jaccard_Index*
 cd(cwd);
 
-
+sum(mean(Herm_Jaccard_Index_1step_in_bilateral_null)>mean(Herm_Jaccard_Index_1step_in_bilateral))/1000
+sum(mean(Herm_Jaccard_Index_1step_in_out_bilateral_null)>mean(Herm_Jaccard_Index_1step_in_out_bilateral))/1000
+sum(mean(Herm_Jaccard_Index_2step_in_bilateral_null)>mean(Herm_Jaccard_Index_2step_in_bilateral))/1000
+sum(mean(Herm_Jaccard_Index_2step_in_out_bilateral_null)>mean(Herm_Jaccard_Index_2step_in_out_bilateral))/1000
+sum(mean(Male_Jaccard_Index_1step_in_bilateral_null)>mean(Male_Jaccard_Index_1step_in_bilateral))/1000
+sum(mean(Male_Jaccard_Index_1step_in_out_bilateral_null)>mean(Male_Jaccard_Index_1step_in_out_bilateral))/1000
+sum(mean(Male_Jaccard_Index_2step_in_bilateral_null)>mean(Male_Jaccard_Index_2step_in_bilateral))/1000
+sum(mean(Male_Jaccard_Index_2step_in_out_bilateral_null)>mean(Male_Jaccard_Index_2step_in_out_bilateral))/1000
 %% Symmetry/Asymmetry breaking for connectivity similarity
 clear;clc;
 cwd = pwd;
@@ -189,63 +148,72 @@ null_n=1000;
 Herm_pair_n = sum(Herm_LRU(:,1));
 Male_pair_n = sum(Male_LRU(:,1));
 
-Herm_Jaccard_Index_1step_in_out_bilateral_asymlist  = zeros(Herm_pair_n,null_n);
-Herm_Jaccard_Index_1step_in_bilateral_asymlist      = zeros(Herm_pair_n,null_n);
-Male_Jaccard_Index_1step_in_out_bilateral_asymlist  = zeros(Male_pair_n,null_n);
-Male_Jaccard_Index_1step_in_bilateral_asymlist      = zeros(Male_pair_n,null_n);
-Herm_Jaccard_Index_2step_in_out_bilateral_asymlist  = zeros(Herm_pair_n,null_n);
-Herm_Jaccard_Index_2step_in_bilateral_asymlist      = zeros(Herm_pair_n,null_n);
-Male_Jaccard_Index_2step_in_out_bilateral_asymlist  = zeros(Male_pair_n,null_n);
-Male_Jaccard_Index_2step_in_bilateral_asymlist      = zeros(Male_pair_n,null_n);
+Herm_Jaccard_Index_1step_in_out_bilateral_asymlist  = zeros(Herm_pair_n,null_n,11);
+Herm_Jaccard_Index_1step_in_bilateral_asymlist      = zeros(Herm_pair_n,null_n,11);
+Male_Jaccard_Index_1step_in_out_bilateral_asymlist  = zeros(Male_pair_n,null_n,11);
+Male_Jaccard_Index_1step_in_bilateral_asymlist      = zeros(Male_pair_n,null_n,11);
+Herm_Jaccard_Index_2step_in_out_bilateral_asymlist  = zeros(Herm_pair_n,null_n,11);
+Herm_Jaccard_Index_2step_in_bilateral_asymlist      = zeros(Herm_pair_n,null_n,11);
+Male_Jaccard_Index_2step_in_out_bilateral_asymlist  = zeros(Male_pair_n,null_n,11);
+Male_Jaccard_Index_2step_in_bilateral_asymlist      = zeros(Male_pair_n,null_n,11);
 
-Herm_Jaccard_Index_1step_in_out_bilateral_symlist  = zeros(Herm_pair_n,null_n);
-Herm_Jaccard_Index_1step_in_bilateral_symlist      = zeros(Herm_pair_n,null_n);
-Male_Jaccard_Index_1step_in_out_bilateral_symlist  = zeros(Male_pair_n,null_n);
-Male_Jaccard_Index_1step_in_bilateral_symlist      = zeros(Male_pair_n,null_n);
-Herm_Jaccard_Index_2step_in_out_bilateral_symlist  = zeros(Herm_pair_n,null_n);
-Herm_Jaccard_Index_2step_in_bilateral_symlist      = zeros(Herm_pair_n,null_n);
-Male_Jaccard_Index_2step_in_out_bilateral_symlist  = zeros(Male_pair_n,null_n);
-Male_Jaccard_Index_2step_in_bilateral_symlist      = zeros(Male_pair_n,null_n);
-
+Herm_Jaccard_Index_1step_in_out_bilateral_symlist  = zeros(Herm_pair_n,null_n,11);
+Herm_Jaccard_Index_1step_in_bilateral_symlist      = zeros(Herm_pair_n,null_n,11);
+Male_Jaccard_Index_1step_in_out_bilateral_symlist  = zeros(Male_pair_n,null_n,11);
+Male_Jaccard_Index_1step_in_bilateral_symlist      = zeros(Male_pair_n,null_n,11);
+Herm_Jaccard_Index_2step_in_out_bilateral_symlist  = zeros(Herm_pair_n,null_n,11);
+Herm_Jaccard_Index_2step_in_bilateral_symlist      = zeros(Herm_pair_n,null_n,11);
+Male_Jaccard_Index_2step_in_out_bilateral_symlist  = zeros(Male_pair_n,null_n,11);
+Male_Jaccard_Index_2step_in_bilateral_symlist      = zeros(Male_pair_n,null_n,11);
+j=0;
+tic;
 for p_asym=0:0.1:1
-    for i=1:1000
+    j=j+1;
+    disp(j)
+    toc;
+    for i=1:null_n
         temp_A=randmio_dir_ratio(Herm_Adj, Herm_cont_ind, p_asym, 0, 1000);
         temp_B=randmio_dir_ratio(Male_Adj, Male_cont_ind, p_asym, 0, 1000);
         % jaccard index (1-step)
-        [Herm_Jaccard_Index_1step_in_out_bilateral_asymlist(:,i), ~, ...
-            Herm_Jaccard_Index_1step_in_bilateral_asymlist(:,i), ~] ...
+        [Herm_Jaccard_Index_1step_in_out_bilateral_asymlist(:,i,j), ~, ...
+            Herm_Jaccard_Index_1step_in_bilateral_asymlist(:,i,j), ~] ...
             = asymtool_jaccard_1step(temp_A,Herm_LRU);
-        [Male_Jaccard_Index_1step_in_out_bilateral_asymlist(:,i), ~, ...
-            Male_Jaccard_Index_1step_in_bilateral_asymlist(:,i), ~] ...
+        [Male_Jaccard_Index_1step_in_out_bilateral_asymlist(:,i,j), ~, ...
+            Male_Jaccard_Index_1step_in_bilateral_asymlist(:,i,j), ~] ...
             = asymtool_jaccard_1step(temp_B,Male_LRU);
         
         % jaccard index (2-step)
-        [Herm_Jaccard_Index_2step_in_out_bilateral_asymlist(:,i), ~, ...
-            Herm_Jaccard_Index_2step_in_bilateral_asymlist(:,i), ~] ...
+        [Herm_Jaccard_Index_2step_in_out_bilateral_asymlist(:,i,j), ~, ...
+            Herm_Jaccard_Index_2step_in_bilateral_asymlist(:,i,j), ~] ...
             = asymtool_jaccard_2step(temp_A,Herm_LRU);
-        [Male_Jaccard_Index_2step_in_out_bilateral_asymlist(:,i), ~, ...
-            Male_Jaccard_Index_2step_in_bilateral_asymlist(:,i), ~] ...
+        [Male_Jaccard_Index_2step_in_out_bilateral_asymlist(:,i,j), ~, ...
+            Male_Jaccard_Index_2step_in_bilateral_asymlist(:,i,j), ~] ...
             = asymtool_jaccard_2step(temp_B,Male_LRU);
     end
 end
+j=0;
+tic;
 for p_sym=0:0.1:1
-    for i=1:1000
+    j=j+1;
+    disp(j)
+    toc;
+    for i=1:null_n
         temp_A=randmio_dir_ratio(Herm_Adj, Herm_cont_ind, 0, p_sym, 1000);
         temp_B=randmio_dir_ratio(Male_Adj, Male_cont_ind, 0, p_sym, 1000);
         % jaccard index (1-step)
-        [Herm_Jaccard_Index_1step_in_out_bilateral_symlist(:,i), ~, ...
-            Herm_Jaccard_Index_1step_in_bilateral_symlist(:,i), ~] ...
+        [Herm_Jaccard_Index_1step_in_out_bilateral_symlist(:,i,j), ~, ...
+            Herm_Jaccard_Index_1step_in_bilateral_symlist(:,i,j), ~] ...
             = asymtool_jaccard_1step(temp_A,Herm_LRU);
-        [Male_Jaccard_Index_1step_in_out_bilateral_symlist(:,i), ~, ...
-            Male_Jaccard_Index_1step_in_bilateral_symlist(:,i), ~] ...
+        [Male_Jaccard_Index_1step_in_out_bilateral_symlist(:,i,j), ~, ...
+            Male_Jaccard_Index_1step_in_bilateral_symlist(:,i,j), ~] ...
             = asymtool_jaccard_1step(temp_B,Male_LRU);
         
         % jaccard index (2-step)
-        [Herm_Jaccard_Index_2step_in_out_bilateral_symlist(:,i), ~, ...
-            Herm_Jaccard_Index_2step_in_bilateral_symlist(:,i), ~] ...
+        [Herm_Jaccard_Index_2step_in_out_bilateral_symlist(:,i,j), ~, ...
+            Herm_Jaccard_Index_2step_in_bilateral_symlist(:,i,j), ~] ...
             = asymtool_jaccard_2step(temp_A,Herm_LRU);
-        [Male_Jaccard_Index_2step_in_out_bilateral_symlist(:,i), ~, ...
-            Male_Jaccard_Index_2step_in_bilateral_symlist(:,i), ~] ...
+        [Male_Jaccard_Index_2step_in_out_bilateral_symlist(:,i,j), ~, ...
+            Male_Jaccard_Index_2step_in_bilateral_symlist(:,i,j), ~] ...
             = asymtool_jaccard_2step(temp_B,Male_LRU);
     end
 end
@@ -379,6 +347,211 @@ legend({'All','Bilateral','null'},'Location','northeast');
 % ylim([0,1])
 hold off
 end
+
+sum(mean(Herm_MFdiff_3node_struc_bilateral_null)>mean(Herm_MFdiff_3node_struc_bilateral))/1000
+sum(mean(Herm_MFdiff_3node_func_bilateral_null)<mean(Herm_MFdiff_3node_func_bilateral))/1000
+sum(mean(Herm_MFdiff_4node_struc_bilateral_null)>mean(Herm_MFdiff_4node_struc_bilateral))/1000
+sum(mean(Herm_MFdiff_4node_func_bilateral_null)<mean(Herm_MFdiff_4node_func_bilateral))/1000
+sum(mean(Male_MFdiff_3node_struc_bilateral_null)>mean(Male_MFdiff_3node_struc_bilateral))/1000
+sum(mean(Male_MFdiff_3node_func_bilateral_null)<mean(Male_MFdiff_3node_func_bilateral))/1000
+sum(mean(Male_MFdiff_4node_struc_bilateral_null)>mean(Male_MFdiff_4node_struc_bilateral))/1000
+sum(mean(Male_MFdiff_4node_func_bilateral_null)<mean(Male_MFdiff_4node_func_bilateral))/1000
+
+%% Symmetry/Asymmetry breaking for motif fingerprint difference
+clear;clc;
+cwd = pwd;
+load('data/celegans_connectome.mat');
+
+null_n=100;
+Herm_pair_n = sum(Herm_LRU(:,1));
+Male_pair_n = sum(Male_LRU(:,1));
+
+Herm_MFdiff_3node_struc_bilateral_asymlist = zeros(Herm_pair_n,null_n,11);
+Herm_MFdiff_3node_func_bilateral_asymlist = zeros(Herm_pair_n,null_n,11);
+Male_MFdiff_3node_struc_bilateral_asymlist = zeros(Male_pair_n,null_n,11);
+Male_MFdiff_3node_func_bilateral_asymlist = zeros(Male_pair_n,null_n,11);
+% Herm_MFdiff_4node_struc_bilateral_asymlist = zeros(Herm_pair_n,null_n,11);
+% Herm_MFdiff_4node_func_bilateral_asymlist = zeros(Herm_pair_n,null_n,11);
+% Male_MFdiff_4node_struc_bilateral_asymlist = zeros(Male_pair_n,null_n,11);
+% Male_MFdiff_4node_func_bilateral_asymlist = zeros(Male_pair_n,null_n,11);
+
+Herm_MFdiff_3node_struc_bilateral_symlist = zeros(Herm_pair_n,null_n,11);
+Herm_MFdiff_3node_func_bilateral_symlist = zeros(Herm_pair_n,null_n,11);
+Male_MFdiff_3node_struc_bilateral_symlist = zeros(Male_pair_n,null_n,11);
+Male_MFdiff_3node_func_bilateral_symlist = zeros(Male_pair_n,null_n,11);
+% Herm_MFdiff_4node_struc_bilateral_symlist = zeros(Herm_pair_n,null_n,11);
+% Herm_MFdiff_4node_func_bilateral_symlist = zeros(Herm_pair_n,null_n,11);
+% Male_MFdiff_4node_struc_bilateral_symlist = zeros(Male_pair_n,null_n,11);
+% Male_MFdiff_4node_func_bilateral_symlist = zeros(Male_pair_n,null_n,11);
+
+tic;
+j=0;
+for p_asym=0:0.1:1
+    j=j+1;
+    disp(j)
+    toc;
+
+    for i=1:null_n
+
+        null_Herm_Adj=randmio_dir_ratio(Herm_Adj, Herm_cont_ind, p_asym, 0, 1000);
+        null_Male_Adj=randmio_dir_ratio(Male_Adj, Male_cont_ind, p_asym, 0, 1000);
+        
+        [Herm_MFdiff_3node_struc_bilateral_asymlist(:,i,j), ~, Herm_MFdiff_3node_func_bilateral_asymlist(:,i,j), ~] ...
+            = asymtool_motif_fingerprint_difference(null_Herm_Adj,Herm_LRU,3,true,false,true,true);
+%         [Herm_MFdiff_4node_struc_bilateral_asymlist(:,i,j), ~, Herm_MFdiff_4node_func_bilateral_asymlist(:,i,j), ~] ...
+%             = asymtool_motif_fingerprint_difference(null_Herm_Adj,Herm_LRU,4,true,false,true,true);
+        
+        [Male_MFdiff_3node_struc_bilateral_asymlist(:,i,j), ~, Male_MFdiff_3node_func_bilateral_asymlist(:,i,j), ~] ...
+            = asymtool_motif_fingerprint_difference(null_Male_Adj,Male_LRU,3,true,false,true,true);
+%         [Male_MFdiff_4node_struc_bilateral_asymlist(:,i,j), ~, Male_MFdiff_4node_func_bilateral_asymlist(:,i,j), ~] ...
+%             = asymtool_motif_fingerprint_difference(null_Male_Adj,Male_LRU,4,true,false,true,true);
+        
+    end
+end
+tic;
+j=0;
+for p_sym=0:0.1:1
+    j=j+1;
+    disp(j)
+    toc;
+
+    for i=1:null_n
+        null_Herm_Adj=randmio_dir_ratio(Herm_Adj, Herm_cont_ind, 0, p_sym, 1000);
+        null_Male_Adj=randmio_dir_ratio(Male_Adj, Male_cont_ind, 0, p_sym, 1000);
+        
+        [Herm_MFdiff_3node_struc_bilateral_symlist(:,i,j), ~, Herm_MFdiff_3node_func_bilateral_symlist(:,i,j), ~] ...
+            = asymtool_motif_fingerprint_difference(null_Herm_Adj,Herm_LRU,3,true,false,true,true);
+%         [Herm_MFdiff_4node_struc_bilateral_symlist(:,i,j), ~, Herm_MFdiff_4node_func_bilateral_symlist(:,i,j), ~] ...
+%             = asymtool_motif_fingerprint_difference(null_Herm_Adj,Herm_LRU,4,true,false,true,true);
+        
+        [Male_MFdiff_3node_struc_bilateral_symlist(:,i,j), ~, Male_MFdiff_3node_func_bilateral_symlist(:,i,j), ~] ...
+            = asymtool_motif_fingerprint_difference(null_Male_Adj,Male_LRU,3,true,false,true,true);
+%         [Male_MFdiff_4node_struc_bilateral_symlist(:,i,j), ~, Male_MFdiff_4node_func_bilateral_symlist(:,i,j), ~] ...
+%             = asymtool_motif_fingerprint_difference(null_Male_Adj,Male_LRU,4,true,false,true,true);
+    end
+end
+
+cd results
+save motif_fingerprint_difference_break *MFdiff*
+cd(cwd);
+figure;
+subplot(2,2,1);plot(squeeze(mean(mean(Herm_MFdiff_3node_func_bilateral_asymlist))));
+subplot(2,2,2);plot(squeeze(mean(mean(Herm_MFdiff_3node_func_bilateral_symlist))));
+subplot(2,2,3);plot(squeeze(mean(mean(Herm_MFdiff_3node_struc_bilateral_asymlist))));
+subplot(2,2,4);plot(squeeze(mean(mean(Herm_MFdiff_3node_struc_bilateral_symlist))));
+figure;
+subplot(2,2,1);plot(squeeze(mean(mean(Male_MFdiff_3node_func_bilateral_asymlist))));
+subplot(2,2,2);plot(squeeze(mean(mean(Male_MFdiff_3node_func_bilateral_symlist))));
+subplot(2,2,3);plot(squeeze(mean(mean(Male_MFdiff_3node_struc_bilateral_asymlist))));
+subplot(2,2,4);plot(squeeze(mean(mean(Male_MFdiff_3node_struc_bilateral_symlist))));
+%% pair-robustness
+clear;clc;
+cwd = pwd;
+load('data/celegans_connectome.mat');
+
+[Herm_Pair_Redundancy_bilateral,Herm_Pair_Redundancy_all] = asymtool_pair_redundancy_index2(Herm_Adj,Herm_LRU);
+[Male_Pair_Redundancy_bilateral,Male_Pair_Redundancy_all] = asymtool_pair_redundancy_index2(Male_Adj,Male_LRU);
+
+cd results
+save pair_redundancy_index2 *Pair_Redundancy*
+cd(cwd);
+
+% p_value
+p_value_herm=custom_shuffle_test(Herm_Pair_Redundancy_all,Herm_Pair_Redundancy_bilateral,100000,1);
+p_value_male=custom_shuffle_test(Male_Pair_Redundancy_all,Male_Pair_Redundancy_bilateral,100000,1);
+disp(p_value_herm)
+disp(p_value_male)
+%% null model for pair-robustness
+clear;clc;
+cwd = pwd;
+load('data/celegans_connectome.mat');
+
+null_n=1000;
+Herm_pair_n = sum(Herm_LRU(:,1));
+Male_pair_n = sum(Male_LRU(:,1));
+
+Herm_Pair_Redundancy_bilateral_null = zeros(Herm_pair_n,null_n);
+Male_Pair_Redundancy_bilateral_null = zeros(Male_pair_n,null_n);
+
+for i=1:null_n
+    disp(['generating random network ',num2str(i),])
+    
+    null_Herm_Adj=randmio_dir(Herm_Adj,1000);
+    null_Male_Adj=randmio_dir(Male_Adj,1000);
+    
+    [Herm_Pair_Redundancy_bilateral_null(:,i),~] ...
+        = asymtool_pair_redundancy_index2(null_Herm_Adj,Herm_LRU,true,false);
+    [Male_Pair_Redundancy_bilateral_null(:,i),~] ...
+        = asymtool_pair_redundancy_index2(null_Male_Adj,Male_LRU,true,false);
+end
+
+cd results
+save pair_redundancy_index_null2 *Pair_Redundancy*
+cd(cwd);
+
+%% Symmetry/Asymmetry breaking for pair-robustness
+clear;clc;
+cwd = pwd;
+load('data/celegans_connectome.mat');
+
+null_n=100;
+Herm_pair_n = sum(Herm_LRU(:,1));
+Male_pair_n = sum(Male_LRU(:,1));
+
+Herm_Pair_Redundancy_bilateral_asymlist = zeros(Herm_pair_n,null_n,11);
+Male_Pair_Redundancy_bilateral_asymlist = zeros(Male_pair_n,null_n,11);
+
+Herm_Pair_Redundancy_bilateral_symlist = zeros(Herm_pair_n,null_n,11);
+Male_Pair_Redundancy_bilateral_symlist = zeros(Male_pair_n,null_n,11);
+
+tic;
+j=0;
+for p_asym=0:0.1:1
+    j=j+1;
+    disp(j)
+    toc;
+    for i=1:null_n
+        null_Herm_Adj=randmio_dir_ratio(Herm_Adj, Herm_cont_ind, p_asym, 0, 1000);
+        null_Male_Adj=randmio_dir_ratio(Male_Adj, Male_cont_ind, p_asym, 0, 1000);
+
+        [Herm_Pair_Redundancy_bilateral_asymlist(:,i,j),~] ...
+            = asymtool_pair_redundancy_index2(null_Herm_Adj,Herm_LRU,true,false);
+        [Male_Pair_Redundancy_bilateral_asymlist(:,i,j),~] ...
+            = asymtool_pair_redundancy_index2(null_Male_Adj,Male_LRU,true,false);
+    end
+end
+j=0;
+for p_sym=0:0.1:1
+    j=j+1;
+    disp(j)
+    toc;
+    for i=1:null_n
+        null_Herm_Adj=randmio_dir_ratio(Herm_Adj, Herm_cont_ind, 0, p_sym, 1000);
+        null_Male_Adj=randmio_dir_ratio(Male_Adj, Male_cont_ind, 0, p_sym, 1000);
+        
+        [Herm_Pair_Redundancy_bilateral_symlist(:,i,j),~] ...
+            = asymtool_pair_redundancy_index2(null_Herm_Adj,Herm_LRU,true,false);
+        [Male_Pair_Redundancy_bilateral_symlist(:,i,j),~] ...
+            = asymtool_pair_redundancy_index2(null_Male_Adj,Male_LRU,true,false);
+    end
+end
+
+cd results
+save pair_redundancy_index_break *Pair_Redundancy*
+cd(cwd);
+% 
+%     data = Herm_Pair_Redundancy_bilateral_asymlist';
+%     
+%     temp=mink(data,2);
+%     errmin=temp(end,:)-mean(data);
+%     temp=maxk(data,2);
+%     errmax=temp(end,:)-mean(data);
+%     errorbar([0:0.1:1], mean(data), errmin,errmax, '-k.');
+%% display for pair-robustness
+figure; plotSpread({Herm_Pair_Redundancy_bilateral,Herm_Pair_Redundancy_all,[],Male_Pair_Redundancy_bilateral,Male_Pair_Redundancy_all},'showMM',5,'distributionColor','k')
+sum(mean(Herm_Pair_Redundancy_bilateral_null)>mean(Herm_Pair_Redundancy_bilateral))/1000
+sum(mean(Male_Pair_Redundancy_bilateral_null)>mean(Male_Pair_Redundancy_bilateral))/1000
+
 %% PCA group analysis
 clear; clc;
 close all
@@ -403,7 +576,7 @@ herm_mf_data = [log(Herm_MFdiff_3node_struc_bilateral),log(Herm_MFdiff_3node_fun
 male_mf_data = [log(Male_MFdiff_3node_struc_bilateral),log(Male_MFdiff_3node_func_bilateral)...
     log(Male_MFdiff_4node_struc_bilateral),log(Male_MFdiff_4node_func_bilateral)];
 
-for i_redun=1:2
+for i_redun=1:6
     if i_redun == 1
         data = herm_pr_data;
         target_sex = 'herm';
@@ -440,6 +613,8 @@ if strcmp(target_sex,'herm')
     idx_sensory = idx_sensory(Herm_LRU(:,1)==1);
     idx_motor = idx_motor(Herm_LRU(:,1)==1);
     idx_inter = idx_inter(Herm_LRU(:,1)==1);
+    label=Herm_label;
+    LRU=Herm_LRU;
 else
     idx_sensory = strcmp(Male_celltype,'sensory neuron');
     idx_motor =  strcmp(Male_celltype,'motorneuron');
@@ -447,29 +622,85 @@ else
     idx_sensory = idx_sensory(Male_LRU(:,1)==1);
     idx_motor = idx_motor(Male_LRU(:,1)==1);
     idx_inter = idx_inter(Male_LRU(:,1)==1);
+    label=Male_label;
+    LRU=Male_LRU;
 end
 
+% 
+% figure(1);
+% subplot(2,3,i_redun)
+% x=[1,2,3];
+% data=[mean(score(idx_sensory,1)),mean(score(idx_motor,1)),mean(score(idx_inter,1))];
+% b=bar(x,data);
+% b.FaceColor=[0.8,0.8,0.8];
+% hold on
+% err=[std(score(idx_sensory,1))/sqrt(length(idx_sensory)),std(score(idx_motor,1))/sqrt(length(idx_motor)),std(score(idx_inter,1))/sqrt(length(idx_inter))];
+% errlow=data-err;
+% errhigh=data+err;
+% er = errorbar(x,data,-err,err);
+% er.Color = [0 0 0];
+% er.LineStyle = 'none';
+% ylim([min(errlow)-0.1,max(errhigh)+0.1])
 
-figure(1);
-subplot(2,1,i_redun)
-x=[1,2,3];
-data=[mean(score(idx_sensory,1)),mean(score(idx_motor,1)),mean(score(idx_inter,1))];
-b=bar(x,data);
-b.FaceColor=[0.8,0.8,0.8];
-hold on
-err=[std(score(idx_sensory,1))/sqrt(length(idx_sensory)),std(score(idx_motor,1))/sqrt(length(idx_motor)),std(score(idx_inter,1))/sqrt(length(idx_inter))];
-errlow=data-err;
-errhigh=data+err;
-er = errorbar(x,data,-err,err);
-er.Color = [0 0 0];
-er.LineStyle = 'none';
-ylim([min(errlow)-0.1,max(errhigh)+0.1])
 
 
-figure(2); subplot(1,2,i_redun);
- plotSpread(score(:,1),'categoryIdx',kmeans(score(:,1),3),'categoryColors',{'b','r','g'})
+% alllow=1;
+% x_s=score(idx_sensory,1);
+% x_i=score(idx_inter,1);
+% x_m=score(idx_motor,1);
+% [~,~,~,stats] = ttest2(x_s,x_i);
+% t_obs1 = stats.tstat;
+% [~,~,~,stats] = ttest2(x_s,x_m);
+% t_obs2 = stats.tstat;
+% [~,~,~,stats] = ttest2(x_m,x_i);
+% t_obs3 = stats.tstat;
+% t_obs=max([abs(t_obs1),abs(t_obs2),abs(t_obs3)]);
+% 
+% n=100000;
+% parfor i=1:n
+%     perm_ind=randperm(length(idx_sensory));
+%     
+%     y_s=score(idx_sensory(perm_ind),1);
+%     y_i=score(idx_inter(perm_ind),1);
+%     y_m=score(idx_motor(perm_ind),1);
+%     
+%     
+%     [~,~,~,stats] = ttest2(y_s,y_i);
+%     t_tar1 = stats.tstat;
+%     [~,~,~,stats] = ttest2(y_s,y_m);
+%     t_tar2 = stats.tstat;
+%     [~,~,~,stats] = ttest2(y_m,y_i);
+%     t_tar3 = stats.tstat;
+%     t_tar=max([abs(t_tar1),abs(t_tar2),abs(t_tar3)]);
+%     
+%     temp(i)= abs(t_tar);
+%     
+%     
+% end
+% 
+% p_val_1=sum(temp >= abs(t_obs1))/n
+% p_val_2=sum(temp >= abs(t_obs2))/n
+% p_val_3=sum(temp >= abs(t_obs3))/n
+% 
+% 
+% temp2(i_redun,:)=[p_val_1,p_val_2,p_val_3];
+rng(123);
+temp_kmeans=kmeans(score(:,1),3);
+[~,temp_red_idx]=sort([mean(score(temp_kmeans==1,1)),mean(score(temp_kmeans==2,1)),mean(score(temp_kmeans==3,1))]);
+temp=label(find(LRU(:,1)));
+for i=1:length(temp)
+    temp{i}=temp{i}(1:end-1);
+end
+group{1,i_redun}=temp(temp_kmeans==temp_red_idx(1));
+group{2,i_redun}=temp(temp_kmeans==temp_red_idx(2));
+group{3,i_redun}=temp(temp_kmeans==temp_red_idx(3));
+
+figure(2); subplot(3,2,i_redun);
+ plotSpread(score(:,1),'categoryIdx',temp_kmeans,'categoryColors',{'b','r','g'})
  
- [~,~,temp]=anova1(score,idx_inter+2*idx_sensory+3*idx_motor)
-c=multcompare(temp)
+%  [~,~,temp]=anova1(score,idx_inter+2*idx_sensory+3*idx_motor)
+% c=multcompare(temp)
  
 end
+
+% group

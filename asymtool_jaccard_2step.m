@@ -78,15 +78,15 @@ if is_bilateral
         conn_right_2_out = sum(A(logical(conn_right_1_out),:)',2)>=1;
 
         if is_in_out
-            conn_left = [(conn_left_1_in+conn_left_2_in)>=1;(conn_left_1_out+conn_left_2_out)>=1];
-            conn_right = [(conn_right_1_in+conn_right_2_in)>=1;(conn_right_1_out+conn_right_2_out)>=1];
+            conn_left = [(conn_left_2_in)>=1;(conn_left_2_out)>=1];
+            conn_right = [(conn_right_2_in)>=1;(conn_right_2_out)>=1];
             
             jaccard_index_in_out_list_bilateral(n_bi) = sum(conn_left.*conn_right) / sum((conn_left+conn_right)>=1);
         end
         
         if is_in
-            in_conn_left =(conn_left_1_in+conn_left_2_in)>=1;
-            in_conn_right = (conn_right_1_in+conn_right_2_in)>=1;
+            in_conn_left =(conn_left_2_in)>=1;
+            in_conn_right = (conn_right_2_in)>=1;
 
             jaccard_index_in_list_bilateral(n_bi) = sum(in_conn_left.*in_conn_right) / sum((in_conn_left+in_conn_right)>=1);
         end
@@ -119,8 +119,8 @@ if is_all
             
             if is_in_out
                 
-                conn_left = [(conn_left_1_in+conn_left_2_in)>=1;(conn_left_1_out+conn_left_2_out)>=1];
-                conn_right = [(conn_right_1_in+conn_right_2_in)>=1;(conn_right_1_out+conn_right_2_out)>=1];
+                conn_left = [(conn_left_2_in)>=1;(conn_left_2_out)>=1];
+                conn_right = [(conn_right_2_in)>=1;(conn_right_2_out)>=1];
                 
                 if sum((conn_left+conn_right)>=1) == 0
                     jaccard_index_in_out_list_all(n_temp) = nan;
@@ -130,8 +130,8 @@ if is_all
             end
 
             if is_in
-                in_conn_left =(conn_left_1_in+conn_left_2_in)>=1;
-                in_conn_right = (conn_right_1_in+conn_right_2_in)>=1;
+                in_conn_left =(conn_left_2_in)>=1;
+                in_conn_right = (conn_right_2_in)>=1;
 
                 if sum((in_conn_left+in_conn_right)>=1) == 0
                     jaccard_index_in_list_all(n_temp) = nan;
