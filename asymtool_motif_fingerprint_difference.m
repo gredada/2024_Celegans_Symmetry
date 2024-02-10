@@ -73,7 +73,6 @@ if is_struc
     F_prob = F_prob ./ sum(F_prob);
     
     if is_bilateral
-        % % %
         MFdiff_struc_list_bilateral = zeros(length(left_idx_list),1);
         for n_bi = 1:length(left_idx_list)
             left_idx = left_idx_list(n_bi);
@@ -87,7 +86,6 @@ if is_struc
     end
     
     if is_all
-        % % %
         MFdiff_struc_list_all = zeros(N*(N-1)/2,1);
         n_temp = 0;
         for left_idx = 1:N
@@ -109,7 +107,6 @@ if is_func
     F_prob = F_prob ./ sum(F_prob);
     
     if is_bilateral
-        % % %
         MFdiff_func_list_bilateral = zeros(length(left_idx_list),1);
         for n_bi = 1:length(left_idx_list)
             left_idx = left_idx_list(n_bi);
@@ -123,7 +120,6 @@ if is_func
     end
     
     if is_all
-        % % %
         MFdiff_func_list_all = zeros(N*(N-1)/2,1);
         n_temp = 0;
         for left_idx = 1:N
